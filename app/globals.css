@@ -1,0 +1,678 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Design tokens
+   Revolt's own palette: ink, paper, and one green. Everything else is space.
+   ------------------------------------------------------------------ */
+@theme {
+  --color-ink: #0a0a0a;
+  --color-ink-2: #111111;
+  --color-ink-3: #171717;
+  --color-ink-4: #1f1f1f;
+  --color-paper: #ffffff;
+  --color-paper-2: #f4f5f2;
+  --color-paper-3: #e9ebe6;
+  --color-green: #2bb61e;
+  --color-green-2: #26a41a;
+  --color-green-soft: #8de882;
+  --color-green-text: #1f8f16; /* the green as text on paper: 4.2:1 */
+  --color-green-deep: #0f4a0b;
+  --color-field: #071a06;
+  --color-muted: #5e625b; /* on paper */
+  --color-muted-dark: rgba(255, 255, 255, 0.62); /* on ink */
+  --color-line: rgba(10, 10, 10, 0.12);
+  --color-line-dark: rgba(255, 255, 255, 0.14);
+
+  --font-display: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
+  --font-text: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, monospace;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+:root {
+  --gutter: clamp(20px, 3vw, 48px);
+  --col-gap: clamp(16px, 1.6vw, 24px);
+  --nav-h: 72px;
+  --content-max: 1600px;
+  --r-panel: clamp(20px, 2.2vw, 32px);
+  --r-card: 20px;
+  --r-sm: 12px;
+  --sect-y: clamp(96px, 11vw, 200px);
+  --sect-y-sm: clamp(64px, 7vw, 120px);
+  --green-glow: rgba(43, 182, 30, 0.42);
+  color-scheme: dark;
+}
+
+html {
+  background: var(--color-ink);
+  scroll-behavior: auto;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-text);
+  color: var(--color-paper);
+  background: var(--color-ink);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+body.is-locked {
+  overflow: hidden;
+}
+
+::selection {
+  background: var(--color-green);
+  color: #fff;
+}
+
+/* Chapter themes. Sections declare data-theme and the nav reads it. */
+[data-theme="ink"] {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  color-scheme: dark;
+}
+[data-theme="paper"] {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  color-scheme: light;
+}
+[data-theme="paper-2"] {
+  background: var(--color-paper-2);
+  color: var(--color-ink);
+  color-scheme: light;
+}
+[data-theme="field"] {
+  background: var(--color-field);
+  color: var(--color-paper);
+  color-scheme: dark;
+}
+
+@layer components {
+  /* ------------------------------------------------------------------
+     Typography
+     ------------------------------------------------------------------ */
+  .t-display-xl,
+  .t-display-l,
+  .t-display-m,
+  .t-display-s {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    font-weight: 600;
+    text-wrap: balance;
+  }
+  .t-display-xl {
+    font-size: clamp(2.9rem, 7.4vw, 8.5rem);
+    line-height: 0.94;
+    letter-spacing: -0.045em;
+  }
+  .t-display-l {
+    font-size: clamp(2.5rem, 5.6vw, 6.25rem);
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+  }
+  .t-display-m {
+    font-size: clamp(1.875rem, 3.2vw, 3.25rem);
+    line-height: 1.06;
+    letter-spacing: -0.03em;
+  }
+  .t-display-s {
+    font-size: clamp(1.375rem, 1.9vw, 1.75rem);
+    line-height: 1.14;
+    letter-spacing: -0.02em;
+  }
+  .t-standfirst {
+    font-family: var(--font-text);
+    font-size: clamp(1.0625rem, 1.3vw, 1.375rem);
+    line-height: 1.42;
+    letter-spacing: -0.008em;
+    font-weight: 400;
+    text-wrap: pretty;
+  }
+  .t-body {
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+  .t-small {
+    font-size: 0.9rem;
+    line-height: 1.45;
+    letter-spacing: 0.002em;
+  }
+  .t-micro {
+    font-size: 0.78rem;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+  }
+  .t-mono {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+    letter-spacing: 0;
+  }
+  .t-green {
+    color: var(--color-green-text);
+  }
+  [data-theme="ink"] .t-green,
+  [data-theme="field"] .t-green,
+  .on-ink .t-green {
+    color: var(--color-green-soft);
+  }
+  .t-muted {
+    color: var(--color-muted);
+  }
+  [data-theme="ink"] .t-muted,
+  [data-theme="field"] .t-muted,
+  .on-ink .t-muted {
+    color: var(--color-muted-dark);
+  }
+
+  /* The green mono caption that sits next to real UI. At most two per page. */
+  .note {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--color-green-text);
+    letter-spacing: 0;
+  }
+  [data-theme="ink"] .note,
+  [data-theme="field"] .note {
+    color: var(--color-green-soft);
+  }
+
+  /* ------------------------------------------------------------------
+     Layout
+     ------------------------------------------------------------------ */
+  .wrap {
+    padding-inline: var(--gutter);
+    max-width: var(--content-max);
+    margin-inline: auto;
+  }
+  .grid-12 {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+  }
+  .sect {
+    padding-block: var(--sect-y);
+  }
+  .sect-sm {
+    padding-block: var(--sect-y-sm);
+  }
+  .hairline {
+    border-top: 1px solid var(--color-line);
+  }
+  [data-theme="ink"] .hairline,
+  [data-theme="field"] .hairline {
+    border-top-color: var(--color-line-dark);
+  }
+
+  /* Panels: stages on the chapter ground */
+  .panel {
+    border-radius: var(--r-panel);
+    overflow: hidden;
+    position: relative;
+  }
+  .panel-ink {
+    background: var(--color-ink-2);
+    color: var(--color-paper);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  }
+  .panel-paper {
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+  .panel-field {
+    background: radial-gradient(120% 90% at 80% 0%, rgba(43, 182, 30, 0.22), transparent 60%), var(--color-field);
+    color: var(--color-paper);
+  }
+  .card {
+    border-radius: var(--r-card);
+  }
+
+  /* ------------------------------------------------------------------
+     Links, buttons, focus
+     ------------------------------------------------------------------ */
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .link,
+  .link-quiet {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 2px;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 100% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.5s var(--ease-out-expo), color 0.3s;
+  }
+  .link-quiet {
+    background-size: 0% 1px;
+  }
+  @media (hover: hover) {
+    .link:hover {
+      background-size: 0% 1px;
+      background-position: 100% 100%;
+    }
+    .link-quiet:hover {
+      background-size: 100% 1px;
+    }
+  }
+  /* text links keep their visual size but accept a 44px tap */
+  .link::before,
+  .link-quiet::before {
+    content: "";
+    position: absolute;
+    inset: -11px 0;
+  }
+  .link-green {
+    color: var(--color-green-text);
+  }
+  [data-theme="ink"] .link-green,
+  [data-theme="field"] .link-green,
+  .on-ink .link-green {
+    color: var(--color-green-soft);
+  }
+
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    height: 3.25rem;
+    padding-inline: 1.5rem;
+    border-radius: 999px;
+    font-family: var(--font-text);
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    white-space: nowrap;
+    color: var(--color-ink);
+    background-color: var(--color-green);
+    transition: background-color 0.35s, color 0.35s, box-shadow 0.5s var(--ease-out-expo), transform 0.5s var(--ease-out-expo);
+    will-change: transform;
+  }
+  .btn:hover {
+    background-color: var(--color-green-2);
+    box-shadow: 0 18px 40px -18px var(--green-glow);
+  }
+  .btn:active {
+    transform: translateY(1px) scale(0.99);
+  }
+  .btn-lg {
+    height: 3.75rem;
+    padding-inline: 1.9rem;
+    font-size: 1.02rem;
+  }
+  .btn-sm {
+    height: 2.75rem;
+    padding-inline: 1.1rem;
+    font-size: 0.875rem;
+  }
+  .btn-secondary {
+    background-color: transparent;
+    color: currentColor;
+    box-shadow: inset 0 0 0 1px var(--color-line-dark);
+  }
+  .btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  }
+  [data-theme="paper"] .btn-secondary,
+  [data-theme="paper-2"] .btn-secondary,
+  .on-paper .btn-secondary {
+    box-shadow: inset 0 0 0 1px var(--color-line);
+  }
+  [data-theme="paper"] .btn-secondary:hover,
+  [data-theme="paper-2"] .btn-secondary:hover,
+  .on-paper .btn-secondary:hover {
+    background-color: rgba(10, 10, 10, 0.05);
+    box-shadow: inset 0 0 0 1px var(--color-ink);
+  }
+  .btn-paper {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+  }
+  .btn-paper:hover {
+    background-color: var(--color-paper-2);
+    box-shadow: none;
+  }
+  .btn-ink {
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .btn-ink:hover {
+    background-color: var(--color-ink-4);
+    box-shadow: none;
+  }
+  /* The arrow lifts along a shallow arc and lands: the tracer in miniature. */
+  .btn .btn-arrow {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    transition: transform 0.55s var(--ease-out-expo);
+  }
+  @media (hover: hover) {
+    .btn:hover .btn-arrow {
+      transform: translateX(4px);
+      animation: arrow-arc 0.55s var(--ease-out-expo);
+    }
+  }
+  @keyframes arrow-arc {
+    0% {
+      transform: translate(0, 0);
+    }
+    45% {
+      transform: translate(2px, -3px);
+    }
+    100% {
+      transform: translate(4px, 0);
+    }
+  }
+
+  .skip-link {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 1000;
+    transform: translateY(-200%);
+    transition: transform 0.2s;
+  }
+  .skip-link:focus-visible {
+    transform: translateY(0);
+  }
+
+  /* ------------------------------------------------------------------
+     Motion helpers
+     Elements marked for reveal start hidden and are revealed by GSAP.
+     With reduced motion they are simply visible.
+     ------------------------------------------------------------------ */
+  @media (prefers-reduced-motion: no-preference) {
+    .js:not(.reduced-motion) [data-reveal],
+    .js:not(.reduced-motion) [data-split],
+    .js:not(.reduced-motion) [data-hero-title],
+    .js:not(.reduced-motion) [data-reveal-group] > * {
+      opacity: 0;
+    }
+  }
+  .mask-line {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.1em;
+    margin-bottom: -0.1em;
+  }
+  .mask-line > span {
+    display: block;
+  }
+  .split-line-inner {
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+  }
+
+  .media-cover {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--r-card);
+    background: var(--color-ink-3);
+  }
+  .media-cover.flush {
+    border-radius: 0;
+  }
+  .media-cover > img,
+  .media-cover > video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  [data-theme="paper"] .media-cover,
+  [data-theme="paper-2"] .media-cover {
+    background: var(--color-paper-3);
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Ledger rows: label · leader · value */
+  .ledger {
+    display: flex;
+    flex-direction: column;
+  }
+  .ledger-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: baseline;
+    gap: 1rem;
+    padding-block: 0.9rem;
+    border-top: 1px solid var(--color-line-dark);
+  }
+  .ledger-row:last-child {
+    border-bottom: 1px solid var(--color-line-dark);
+  }
+  [data-theme="paper"] .ledger-row,
+  [data-theme="paper-2"] .ledger-row,
+  .on-paper .ledger-row {
+    border-color: var(--color-line);
+  }
+  .ledger-row i {
+    display: block;
+    height: 1px;
+    border-bottom: 1px dotted currentColor;
+    opacity: 0.25;
+    transform: translateY(-0.35em);
+  }
+
+  /* Accordion */
+  .acc-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.6s var(--ease-out-expo);
+  }
+  .acc-panel > div {
+    overflow: hidden;
+  }
+  .acc-item.is-open .acc-panel {
+    grid-template-rows: 1fr;
+  }
+  .acc-icon {
+    transition: transform 0.6s var(--ease-out-expo);
+  }
+  .acc-item.is-open .acc-icon {
+    transform: rotate(45deg);
+  }
+
+  /* Prose for blog articles and legal pages */
+  .prose-revolt {
+    font-size: clamp(1.0625rem, 1.15vw, 1.2rem);
+    line-height: 1.62;
+  }
+  .prose-revolt > * + * {
+    margin-top: 1.25em;
+  }
+  .prose-revolt h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.6rem, 2.4vw, 2.25rem);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-top: 2.2em;
+    text-wrap: balance;
+  }
+  .prose-revolt h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.25rem, 1.6vw, 1.5rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-top: 1.8em;
+  }
+  .prose-revolt h4 {
+    font-weight: 600;
+    font-size: 1.05em;
+    margin-top: 1.6em;
+  }
+  .prose-revolt ul,
+  .prose-revolt ol {
+    padding-left: 1.4em;
+  }
+  .prose-revolt ul {
+    list-style: disc;
+  }
+  .prose-revolt ol {
+    list-style: decimal;
+  }
+  .prose-revolt li + li {
+    margin-top: 0.45em;
+  }
+  .prose-revolt li::marker {
+    color: var(--color-green);
+  }
+  .prose-revolt a {
+    color: var(--color-green-text);
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 100% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+  }
+  .prose-revolt blockquote {
+    border-left: 2px solid var(--color-green);
+    padding-left: 1.2em;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.15em;
+    letter-spacing: -0.01em;
+  }
+  .prose-revolt figure {
+    margin-block: 2.4em;
+  }
+  .prose-revolt figure img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--r-card);
+  }
+}
+
+:focus {
+  outline: none;
+}
+:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Navigation
+   ------------------------------------------------------------------ */
+.nav-bar {
+  transition: background-color 0.5s var(--ease-out-expo), box-shadow 0.5s var(--ease-out-expo), transform 0.6s var(--ease-out-expo), color 0.35s;
+}
+.nav-bar[data-solid="true"] {
+  background-color: rgba(10, 10, 10, 0.66);
+  -webkit-backdrop-filter: saturate(160%) blur(18px);
+  backdrop-filter: saturate(160%) blur(18px);
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+}
+.nav-bar[data-solid="true"][data-tone="paper"] {
+  background-color: rgba(255, 255, 255, 0.72);
+  box-shadow: inset 0 -1px 0 rgba(10, 10, 10, 0.08);
+}
+.nav-bar[data-hidden="true"] {
+  transform: translateY(-100%);
+}
+
+/* ------------------------------------------------------------------
+   Curtain: first load and page-to-page turn
+   ------------------------------------------------------------------ */
+.curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  background: var(--color-ink);
+  color: var(--color-paper);
+  will-change: transform;
+}
+.curtain-label {
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2rem, 5vw, 4.5rem);
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.curtain-label > span {
+  display: block;
+}
+.no-js .curtain,
+.reduced-motion .curtain {
+  display: none;
+}
+/* Before the engine boots, the page waits under the curtain. */
+.js:not(.reduced-motion):not(.is-ready) main {
+  visibility: hidden;
+}
+main.is-leaving {
+  pointer-events: none;
+}
+
+/* Tracer mark (the chapter seal) and diagram traces draw on reveal */
+.tracer-mark path,
+.diagram .trace {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.reduced-motion .tracer-mark path,
+.no-js .tracer-mark path,
+.tracer-mark.is-drawn path,
+.reduced-motion .diagram .trace,
+.no-js .diagram .trace,
+.diagram.is-drawn .trace {
+  stroke-dashoffset: 0;
+}
+
+/* The wordmark running off the foot of the page */
+.footer-wordmark {
+  width: 126vw;
+  max-width: none;
+  height: auto;
+  margin-left: -13vw;
+  opacity: 0.16;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Full-page menu */
+.menu {
+  clip-path: inset(0 0 100% 0 round 0 0 var(--r-panel) var(--r-panel));
+}
+
+/* With reduced motion the shot is already taken; the invitation to scroll would lie. */
+.reduced-motion .hero-note,
+.touch .hero-note {
+  display: none;
+}
