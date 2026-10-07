@@ -49,12 +49,14 @@ content/                 site.ts (facts, links, founders), services.ts (four sys
                          cities.json, privacy.json
 components/motion/       SmoothScroll (Lenis), Curtain (preloader + chapter-turn page transitions), useReveals,
                          useSectionTheme (nav inversion)
-components/scenes/       BayScene (hero), EcosystemScene (four tracers, one venue)
+components/scenes/       BayScene (hero: bay, turf, screen + HUD), course.ts (the hole on the screen, shared),
+                         CourseBake (renders public/media/hero/course-*.webp), EcosystemScene (four tracers, one venue)
 components/sections/     Nav, Footer, Hero, WhoWeAre, Systems, Ecosystem, WhyRevolt, Journey, StrategyCall, PageHero
 components/pages/        the internal page compositions
 components/ui/           Button (magnetic, arc arrow), TracerMark, Diagram (sixteen drawings), Accordion, LeadForm, Media
 scripts/                 media.mjs (asset pipeline from the live site's originals), content.mjs (blog, cities, privacy)
 public/media/            the brand's assets: wordmark, the venue bay, the golfer, the founders, rendered service stills,
+                         the hero's simulator picture (hero/),
                          blog covers, city imagery, OG image
 ```
 

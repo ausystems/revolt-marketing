@@ -20,8 +20,13 @@ a dark bay. It is the only saturated colour on the page.
 
 Where the tracer lives (and only here; it must never become a gimmick):
 
-1. **The hero.** A Three.js simulator bay at night. The ball sits on the mat. As the visitor scrolls, the ball
-   launches, the tracer draws toward the screen, the camera dollies forward and the screen brightens on impact.
+1. **The hero.** A Three.js simulator bay at night, built to read as a real one: quilted acoustic walls, a green
+   LED frame around the enclosure, shell-rendered turf (fibres with height, nap and self-shadowing) and a two-tone
+   hitting mat with a launch monitor beside it. The screen is a projector picture of a real-looking hole (a baked
+   course render) under a still simulator HUD set in the site's typeface, and it lights the bay. As the visitor
+   scrolls, the ball launches and the tracer (a white-hot core in a green glow) arcs through the air while the
+   camera rises gently; the ball meets the screen and the light blooms where it strikes. The story ends there:
+   nothing on the screen moves, and there are no numbers or lines on it beyond the tracer's own glow.
 2. **The chapter mark.** Every section opens with a small hairline tracer arc (`<TracerMark />`) instead of an
    eyebrow label. It is Revolt's seal, the way TruLinq has its stamp.
 3. **The ecosystem.** Four tracers, one from each system, converging on one venue. Three.js, scroll-scrubbed.
@@ -56,7 +61,8 @@ Where the tracer lives (and only here; it must never become a gimmick):
   photographs (the bay, the golfer, the founders) and its branded blog covers are kept and graded.
 * **Imagery.** Real assets only, in `public/media`. `hero-bay.jpg` (the venue bay), `golfer.jpg` (the swing),
   `founder-shayne.jpg`, `founder-tristan.jpg`, service scenes `services/*.jpg` (stills rendered from the site’s own real-time scenes,
-  plus the venue photograph), blog covers. The live site’s AI-generated service images were retired. Every image is `next/image` with sizes, alt text,
+  plus the venue photograph), blog covers, and the hero's simulator picture `hero/course-*.webp` (rendered by
+  `components/scenes/CourseBake.ts` from the course defined in `components/scenes/course.ts`). The live site’s AI-generated service images were retired. Every image is `next/image` with sizes, alt text,
   and a `media-cover` frame. Crops are art-directed per breakpoint.
 
 ## Components (`components/ui`)

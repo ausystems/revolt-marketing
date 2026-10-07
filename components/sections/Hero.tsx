@@ -10,8 +10,9 @@ import type { BayScene } from "@/components/scenes/BayScene";
 
 /**
  * Opening chapter. The simulator bay at night behind a typographic statement.
- * On large pointer screens the section pins and scrolling takes the shot: the ball launches, the tracer draws,
- * the camera follows. On touch the scene simply follows the page. With reduced motion, one settled frame.
+ * On large pointer screens the section pins and scrolling takes the shot: the ball launches, the tracer draws to
+ * the screen and the shot ends there, in a bloom of light. On touch the scene follows the page. With reduced motion,
+ * one settled frame: the shot complete.
  */
 export default function Hero() {
   const section = useRef<HTMLElement>(null);
@@ -21,6 +22,7 @@ export default function Hero() {
   const headline = useRef<HTMLHeadingElement>(null);
   const copy = useRef<HTMLDivElement>(null);
   const note = useRef<HTMLParagraphElement>(null);
+  const veil = useRef<HTMLDivElement>(null);
   const scene = useRef<BayScene | null>(null);
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -39,7 +41,7 @@ export default function Hero() {
         if (!alive) return;
         const s = new BayScene(el, host, { touch: isTouchDevice(), reduced, onFirstFrame: () => setReady(true), onContextLost: () => setFailed(true) });
         scene.current = s;
-        s.setProgress(reduced ? 0.78 : lastProgress.current);
+        s.setProgress(reduced ? 1 : lastProgress.current);
       } catch (e) {
         console.error(e);
         setFailed(true);
@@ -91,7 +93,9 @@ export default function Hero() {
         tl.to(headline.current, { opacity: 0, y: -60, duration: 0.22, ease: "power1.in" }, 0.02)
           .to(copy.current, { opacity: 0, y: -30, duration: 0.18, ease: "power1.in" }, 0)
           .to(note.current, { opacity: 0, duration: 0.1, ease: "power1.in" }, 0)
-          .to({}, { duration: 0.76 });
+          // the type's shade lifts with the type, so the shot plays out in the bay's own light
+          .to(veil.current, { opacity: 0, duration: 0.3, ease: "sine.inOut" }, 0.06)
+          .to({}, { duration: 0.76 }, 0.24);
       });
       // Everywhere else: the scene follows the page without pinning.
       mm.add("(max-width: 1023px), (hover: none), (pointer: coarse)", () => {
@@ -101,7 +105,8 @@ export default function Hero() {
           start: "top top",
           end: "bottom top",
           scrub: true,
-          onUpdate: (self) => { const p = self.progress * 0.8; lastProgress.current = p; scene.current?.setProgress(p); },
+          // the strike lands by the time half the hero has scrolled away; the rest of the way it holds
+          onUpdate: (self) => { const p = Math.min(1, self.progress * 1.9); lastProgress.current = p; scene.current?.setProgress(p); },
         });
       });
     }, sec);
@@ -142,8 +147,10 @@ export default function Hero() {
         </div>
         {/* legibility: quiet gradients beneath the nav and the type, never a scrim over the screen */}
         <div className="pointer-events-none absolute inset-x-0 top-0 h-[22%] bg-gradient-to-b from-ink/70 to-transparent" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[42%] bg-gradient-to-t from-ink/85 via-ink/30 to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-[52%] bg-gradient-to-r from-ink/75 via-ink/30 to-transparent" />
+        <div ref={veil} className="pointer-events-none absolute inset-0">
+          <div className="absolute inset-x-0 bottom-0 h-[42%] bg-gradient-to-t from-ink/85 via-ink/30 to-transparent" />
+          <div className="absolute inset-y-0 left-0 w-[52%] bg-gradient-to-r from-ink/75 via-ink/30 to-transparent" />
+        </div>
       </div>
 
       <div className="wrap relative flex w-full grow flex-col justify-end pb-10 sm:pb-14 lg:h-full lg:pb-16" style={{ paddingTop: "calc(var(--nav-h) + 24px)" }}>
@@ -168,7 +175,7 @@ export default function Hero() {
         </div>
         <p ref={note} className="note hero-note mt-8 hidden lg:block">scroll to take the shot</p>
       </div>
-      <p className="sr-only">A real-time rendering of a golf simulator bay at night: as the page scrolls, a ball launches from the mat and its shot tracer draws toward the screen.</p>
+      <p className="sr-only">A real-time rendering of a golf simulator bay at night: as the page scrolls, a ball launches from the hitting mat and its glowing shot tracer arcs through the air until the ball strikes the screen.</p>
     </section>
   );
 }
