@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import AboutPage from "@/components/pages/AboutPage";
+import JsonLd from "@/components/ui/JsonLd";
+import { seoFor } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: { absolute: "About Us | Revolt" },
-  description: "Meet the two founders of Revolt Marketing, Shayne Mueller and Tristan Costa: a marketing firm built exclusively for golf simulator venues across North America.",
-  alternates: { canonical: "/about-us" },
-};
+export const metadata: Metadata = seoFor("/about-us");
 
 export default function Page() {
-  return <AboutPage />;
+  return (
+    <>
+      <JsonLd route="/about-us" />
+      <AboutPage />
+    </>
+  );
 }

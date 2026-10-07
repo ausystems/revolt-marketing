@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { hasWebGL2, isTouchDevice, motion, PIN_QUERY, prefersReducedMotion, registerGsap } from "@/lib/motion";
 import { onPageReveal } from "@/components/motion/Curtain";
 import { Arrow } from "@/components/ui/Button";
+import { live } from "@/content/live";
 import type { BayScene } from "@/components/scenes/BayScene";
 
 /**
@@ -19,10 +20,11 @@ export default function Hero() {
   const stage = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const poster = useRef<HTMLDivElement>(null);
-  const headline = useRef<HTMLHeadingElement>(null);
+  const headline = useRef<HTMLParagraphElement>(null);
   const copy = useRef<HTMLDivElement>(null);
-  const note = useRef<HTMLParagraphElement>(null);
+  const kicker = useRef<HTMLHeadingElement>(null);
   const veil = useRef<HTMLDivElement>(null);
+  const { hero } = live.home;
   const scene = useRef<BayScene | null>(null);
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -56,21 +58,22 @@ export default function Hero() {
     const { gsap, ScrollTrigger } = registerGsap();
     const reduced = prefersReducedMotion();
     const lines = headline.current?.querySelectorAll<HTMLElement>(".mask-line > span") ?? [];
+    const k = kicker.current;
     const items = copy.current?.querySelectorAll<HTMLElement>("[data-enter]") ?? [];
 
     const ctx = gsap.context(() => {
       // Entrance: waits for the curtain.
       if (reduced) {
-        gsap.set([lines, items, note.current], { clearProps: "all" });
+        gsap.set([lines, items, k], { clearProps: "all" });
       } else {
         gsap.set(lines, { yPercent: 110 });
         gsap.set(items, { opacity: 0, y: 18 });
-        gsap.set(note.current, { opacity: 0 });
+        gsap.set(k, { opacity: 0, y: 12 });
         onPageReveal(() => {
           gsap.timeline({ defaults: { ease: motion.ease } })
+            .to(k, { opacity: 1, y: 0, duration: 1 }, 0)
             .to(lines, { yPercent: 0, duration: 1.3, stagger: 0.1 }, 0.1)
-            .to(items, { opacity: 1, y: 0, duration: 1, stagger: 0.08 }, 0.7)
-            .to(note.current, { opacity: 1, duration: 1 }, 1.2);
+            .to(items, { opacity: 1, y: 0, duration: 1, stagger: 0.08 }, 0.7);
         });
       }
 
@@ -90,9 +93,8 @@ export default function Hero() {
             onUpdate: (self) => { lastProgress.current = self.progress; scene.current?.setProgress(self.progress); },
           },
         });
-        tl.to(headline.current, { opacity: 0, y: -60, duration: 0.22, ease: "power1.in" }, 0.02)
+        tl.to([k, headline.current], { opacity: 0, y: -60, duration: 0.22, ease: "power1.in" }, 0.02)
           .to(copy.current, { opacity: 0, y: -30, duration: 0.18, ease: "power1.in" }, 0)
-          .to(note.current, { opacity: 0, duration: 0.1, ease: "power1.in" }, 0)
           // the type's shade lifts with the type, so the shot plays out in the bay's own light
           .to(veil.current, { opacity: 0, duration: 0.3, ease: "sine.inOut" }, 0.06)
           .to({}, { duration: 0.76 }, 0.24);
@@ -154,28 +156,28 @@ export default function Hero() {
       </div>
 
       <div className="wrap relative flex w-full grow flex-col justify-end pb-10 sm:pb-14 lg:h-full lg:pb-16" style={{ paddingTop: "calc(var(--nav-h) + 24px)" }}>
-        <h1 ref={headline} className="t-display-xl max-w-[15ch] text-paper">
-          <span className="mask-line"><span>Marketing built</span></span>
-          <span className="mask-line"><span>exclusively for</span></span>
+        {/* the live site's headline, kept as the page's h1; the display line beneath it is ours */}
+        <h1 ref={kicker} className="t-small mb-5 font-medium text-green-soft lg:mb-7">{hero.h1}</h1>
+        <p ref={headline} className="t-display-xl max-w-[15ch] text-paper">
+          <span className="mask-line"><span>Marketing built</span></span>{" "}
+          <span className="mask-line"><span>exclusively for</span></span>{" "}
           <span className="mask-line"><span className="t-green">golf simulator venues.</span></span>
-        </h1>
+        </p>
         <div ref={copy} className="mt-8 grid grid-cols-1 gap-7 lg:mt-10 lg:grid-cols-12">
           <p data-enter className="t-standfirst text-paper/85 max-w-[44ch] lg:col-span-6">
-            Most golf simulator venues struggle with inconsistent walk-in traffic and empty weekdays. Revolt is the only golf simulator marketing company built exclusively for golf entertainment venues across North America — proven strategies that fill your bays, book corporate events, and maximize revenue.
+            {hero.p}
           </p>
           <div data-enter className="flex flex-wrap items-center gap-x-7 gap-y-4 lg:col-span-6">
-            <Link href="/contact-us" data-label="Free Strategy Call" className="btn btn-lg">
-              Book a free strategy call
+            <Link href={hero.buttons[0].href ?? "/contact-us"} className="btn btn-lg">
+              {hero.buttons[0].text}
               <Arrow />
             </Link>
-            <Link href="/services" data-label="Services" className="link t-small font-medium text-paper">
-              See the four systems
+            <Link href={hero.buttons[1].href ?? "/services"} className="link t-small font-medium text-paper">
+              {hero.buttons[1].text}
             </Link>
           </div>
         </div>
-        <p ref={note} className="note hero-note mt-8 hidden lg:block">scroll to take the shot</p>
       </div>
-      <p className="sr-only">A real-time rendering of a golf simulator bay at night: as the page scrolls, a ball launches from the hitting mat and its glowing shot tracer arcs through the air until the ball strikes the screen.</p>
     </section>
   );
 }

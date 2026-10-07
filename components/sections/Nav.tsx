@@ -4,8 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
-import { site } from "@/content/site";
-import { systems } from "@/content/services";
+import { live } from "@/content/live";
 import { useSectionTheme } from "@/components/motion/useSectionTheme";
 import { isProgrammaticScroll, getLenis } from "@/components/motion/SmoothScroll";
 import { isLeaving } from "@/components/motion/Curtain";
@@ -24,10 +23,10 @@ export default function Nav() {
   const pathname = usePathname();
   const [hidden, setHidden] = useState(false);
   const [solid, setSolid] = useState(false);
-  const [servicesOpen, setServicesOpen] = useState(false);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const state = useRef({ lastY: 0, anchorY: 0, dir: 0 });
-  const servicesId = useId();
+  const menuId = useId();
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLElement>(null);
@@ -68,7 +67,7 @@ export default function Nav() {
 
   // Close everything on route change (derived during render, per React's guidance).
   const [seenPath, setSeenPath] = useState(pathname);
-  if (seenPath !== pathname) { setSeenPath(pathname); setMenuOpen(false); setServicesOpen(false); }
+  if (seenPath !== pathname) { setSeenPath(pathname); setMenuOpen(false); setOpenIndex(null); }
 
   // Full-page menu open/close choreography.
   useEffect(() => {
@@ -95,17 +94,18 @@ export default function Nav() {
   }, [menuOpen]);
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") { setMenuOpen(false); setServicesOpen(false); } };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") { setMenuOpen(false); setOpenIndex(null); } };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  const openServices = () => { if (closeTimer.current) clearTimeout(closeTimer.current); setServicesOpen(true); };
-  const closeServices = () => { closeTimer.current = setTimeout(() => setServicesOpen(false), 180); };
+  const openMenu = (i: number) => { if (closeTimer.current) clearTimeout(closeTimer.current); setOpenIndex(i); };
+  const closeMenuSoon = () => { closeTimer.current = setTimeout(() => setOpenIndex(null), 180); };
 
   const onPaper = tone === "paper" && !menuOpen;
   const fg = onPaper ? "text-ink" : "text-paper";
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+  const { nav } = live;
 
   return (
     <>
@@ -117,119 +117,119 @@ export default function Nav() {
         data-hidden={hidden && !menuOpen}
       >
         <div className="wrap flex items-center justify-between" style={{ height: "var(--nav-h)" }}>
-          <Link href="/" aria-label="Revolt Marketing, home" data-label="Revolt" className="relative block h-[20px] w-[126px] sm:h-[22px] sm:w-[138px]">
+          <Link href="/" aria-label="Revolt Marketing, home" className="relative block h-[20px] w-[126px] sm:h-[22px] sm:w-[138px]">
             <Image src="/media/wordmark.png" alt="" fill sizes="138px" priority className="object-contain object-left" />
           </Link>
 
           <nav aria-label="Primary" className="hidden items-center gap-8 lg:flex">
-            <div
-              className="relative"
-              onMouseEnter={openServices}
-              onMouseLeave={closeServices}
-              onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setServicesOpen(false); }}
-            >
-              <button
-                type="button"
-                className={`link-quiet t-small font-medium ${isActive("/services") || systems.some((s) => isActive(s.slug)) ? "opacity-100" : "opacity-80 hover:opacity-100"}`}
-                aria-expanded={servicesOpen}
-                aria-controls={servicesId}
-                onClick={() => setServicesOpen((o) => !o)}
-              >
-                Services
-              </button>
-              <div
-                id={servicesId}
-                className={`absolute left-1/2 top-full -translate-x-1/2 pt-4 transition-all duration-300 ${servicesOpen ? "visible translate-y-0 opacity-100" : "invisible -translate-y-1 opacity-0"}`}
-                style={{ transitionTimingFunction: "var(--ease-out-expo)" }}
-              >
-                <div className="panel-ink w-[560px] rounded-[20px] p-2 text-paper shadow-[0_30px_80px_-30px_rgba(0,0,0,.8)]">
-                  <div className="grid grid-cols-2 gap-1">
-                    {systems.map((s) => (
-                      <Link
-                        key={s.slug}
-                        href={s.slug}
-                        data-label={s.short}
-                        onClick={() => setServicesOpen(false)}
-                        className="group rounded-[14px] p-4 transition-colors duration-300 hover:bg-white/[0.06]"
-                      >
-                        <span className="t-mono t-micro t-green block">{s.n}</span>
-                        <span className="t-display-s mt-1 block text-[1.05rem]">{s.name}</span>
-                        <span className="t-small t-muted mt-1 block text-[0.85rem] leading-snug">{s.subline}</span>
-                      </Link>
-                    ))}
+            {nav.items.map((item, i) =>
+              item.children ? (
+                <div
+                  key={item.label}
+                  className="relative"
+                  onMouseEnter={() => openMenu(i)}
+                  onMouseLeave={closeMenuSoon}
+                  onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpenIndex(null); }}
+                >
+                  <div className="flex items-center gap-1.5">
+                    <Link
+                      href={item.href}
+                      className={`link-quiet t-small font-medium ${isActive(item.href) || item.children.some((c) => isActive(c.href)) ? "opacity-100" : "opacity-80 hover:opacity-100"}`}
+                    >
+                      {item.label}
+                    </Link>
+                    <button
+                      type="button"
+                      className="grid h-6 w-5 place-items-center opacity-70 hover:opacity-100"
+                      aria-expanded={openIndex === i}
+                      aria-controls={`${menuId}-${i}`}
+                      aria-label={item.label}
+                      onClick={() => setOpenIndex((o) => (o === i ? null : i))}
+                    >
+                      <svg viewBox="0 0 12 12" className={`h-2.5 w-2.5 transition-transform duration-300 ${openIndex === i ? "rotate-180" : ""}`} fill="none" aria-hidden="true">
+                        <path d="M2 4.5 6 8l4-3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </button>
                   </div>
-                  <Link href="/services" data-label="Services" onClick={() => setServicesOpen(false)} className="mt-1 flex items-center justify-between rounded-[14px] px-4 py-3 transition-colors duration-300 hover:bg-white/[0.06]">
-                    <span className="t-small font-medium">All services</span>
-                    <Arrow className="h-4 w-4 opacity-70" />
-                  </Link>
+                  <div
+                    id={`${menuId}-${i}`}
+                    className={`absolute left-1/2 top-full -translate-x-1/2 pt-4 transition-all duration-300 ${openIndex === i ? "visible translate-y-0 opacity-100" : "invisible -translate-y-1 opacity-0"}`}
+                    style={{ transitionTimingFunction: "var(--ease-out-expo)" }}
+                  >
+                    <ul className="panel-ink min-w-[300px] rounded-[20px] p-2 text-paper shadow-[0_30px_80px_-30px_rgba(0,0,0,.8)]">
+                      {item.children.map((c) => (
+                        <li key={c.href}>
+                          <Link href={c.href} onClick={() => setOpenIndex(null)} className="flex items-center justify-between gap-6 rounded-[14px] px-4 py-3 transition-colors duration-300 hover:bg-white/[0.06]">
+                            <span className="t-small font-medium">{c.label}</span>
+                            <Arrow className="h-4 w-4 opacity-60" />
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-              </div>
-            </div>
-            {site.nav.primary.filter((l) => l.label !== "Services" && l.label !== "Contact").map((l) => (
-              <Link key={l.href} href={l.href} className={`link-quiet t-small font-medium ${isActive(l.href) ? "opacity-100" : "opacity-80 hover:opacity-100"}`} aria-current={isActive(l.href) ? "page" : undefined}>
-                {l.label}
-              </Link>
-            ))}
-            <Link href="/contact-us" data-label="Free Strategy Call" className="btn btn-sm">
-              {site.cta.label}
+              ) : (
+                <Link key={item.label} href={item.href} className={`link-quiet t-small font-medium ${isActive(item.href) ? "opacity-100" : "opacity-80 hover:opacity-100"}`} aria-current={isActive(item.href) ? "page" : undefined}>
+                  {item.label}
+                </Link>
+              ),
+            )}
+            <Link href={nav.cta.href} className="btn btn-sm">
+              {nav.cta.label}
               <Arrow />
             </Link>
           </nav>
 
           <div className="flex items-center gap-3 lg:hidden">
-            <Link href="/contact-us" data-label="Free Strategy Call" className={`btn btn-sm !px-3.5 !text-[0.8rem] transition-opacity duration-300 ${menuOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`} tabIndex={menuOpen ? -1 : 0}>
-              Book a call
+            <Link href={nav.cta.href} className={`btn btn-sm !px-3.5 !text-[0.8rem] transition-opacity duration-300 ${menuOpen ? "pointer-events-none opacity-0" : "opacity-100"}`} tabIndex={menuOpen ? -1 : 0}>
+              {nav.cta.label}
             </Link>
             <button
               type="button"
-              className="link-quiet t-small font-medium"
+              className="grid h-11 w-11 place-items-center"
               aria-expanded={menuOpen}
               aria-controls="site-menu"
+              aria-label="Menu"
               onClick={() => setMenuOpen((o) => !o)}
             >
-              {menuOpen ? "Close" : "Menu"}
+              <span aria-hidden="true" className="relative block h-3 w-6">
+                <span className={`absolute left-0 right-0 h-[1.5px] bg-current transition-transform duration-500 ${menuOpen ? "top-[5px] rotate-45" : "top-0"}`} />
+                <span className={`absolute left-0 right-0 h-[1.5px] bg-current transition-transform duration-500 ${menuOpen ? "top-[5px] -rotate-45" : "top-[10px]"}`} />
+              </span>
             </button>
           </div>
         </div>
       </header>
 
-      {/* Full-page menu for small screens */}
+      {/* Full-page menu for small screens: the same menu, children beneath their parents */}
       <div ref={menuRef} id="site-menu" inert={!menuOpen} aria-hidden={!menuOpen} className="menu fixed inset-0 z-[110] bg-ink text-paper lg:hidden">
         <div className="wrap flex h-full flex-col justify-between overflow-y-auto pb-8" style={{ paddingTop: "calc(var(--nav-h) + 16px)" }}>
           <nav aria-label="Menu">
             <ul className="flex flex-col">
-              {[{ label: "Home", href: "/" }, ...site.nav.primary].map((l) => (
-                <li key={l.href} data-menu-item className="border-b border-line-dark">
-                  <Link href={l.href} onClick={() => setMenuOpen(false)} className="t-display-l flex items-baseline justify-between py-2.5 text-[clamp(1.9rem,8vw,2.6rem)]">
-                    <span>{l.label}</span>
+              {nav.items.map((item) => (
+                <li key={item.label} data-menu-item className="border-b border-line-dark py-1">
+                  <Link href={item.href} onClick={() => setMenuOpen(false)} className="t-display-l flex items-baseline justify-between py-2 text-[clamp(1.8rem,7.5vw,2.5rem)]">
+                    <span>{item.label}</span>
                     <Arrow className="h-5 w-5 opacity-60" />
                   </Link>
-                </li>
-              ))}
-            </ul>
-            <ul className="mt-6 grid grid-cols-1 gap-1 sm:grid-cols-2">
-              {systems.map((s) => (
-                <li key={s.slug} data-menu-item>
-                  <Link href={s.slug} data-label={s.short} onClick={() => setMenuOpen(false)} className="block rounded-[14px] py-2.5">
-                    <span className="t-mono t-micro t-green mr-3">{s.n}</span>
-                    <span className="t-small font-medium">{s.name}</span>
-                  </Link>
+                  {item.children && (
+                    <ul className="mb-3 grid grid-cols-1 gap-1 sm:grid-cols-2">
+                      {item.children.map((c) => (
+                        <li key={c.href}>
+                          <Link href={c.href} onClick={() => setMenuOpen(false)} className="t-small t-muted block py-2 hover:text-paper">{c.label}</Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </li>
               ))}
             </ul>
           </nav>
-          <div data-menu-item className="mt-10 flex flex-col gap-6">
-            <Link href="/contact-us" data-label="Free Strategy Call" onClick={() => setMenuOpen(false)} className="btn btn-lg w-full">
-              {site.cta.label}
+          <div data-menu-item className="mt-10">
+            <Link href={nav.cta.href} onClick={() => setMenuOpen(false)} className="btn btn-lg w-full">
+              {nav.cta.label}
               <Arrow />
             </Link>
-            <div className="t-small t-muted flex flex-wrap gap-x-6 gap-y-2">
-              <a className="link" href={site.phone.href}>{site.phone.display}</a>
-              <a className="link" href={`mailto:${site.email}`}>{site.email}</a>
-              {site.social.map((s) => (
-                <a key={s.label} className="link" href={s.href} target="_blank" rel="noopener">{s.label}</a>
-              ))}
-            </div>
           </div>
         </div>
       </div>

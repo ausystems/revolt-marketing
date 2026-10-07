@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import ServicesPage from "@/components/pages/ServicesPage";
+import JsonLd from "@/components/ui/JsonLd";
+import { seoFor } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: { absolute: "Our Services | Revolt" },
-  description: "Explore Revolt’s complete marketing services for golf simulator businesses—SEO, automation, ads, branding, and growth systems tailored to scale.",
-  alternates: { canonical: "/services" },
-};
+export const metadata: Metadata = seoFor("/services");
 
 export default function Page() {
-  return <ServicesPage />;
+  return (
+    <>
+      <JsonLd route="/services" />
+      <ServicesPage />
+    </>
+  );
 }

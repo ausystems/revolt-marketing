@@ -563,6 +563,145 @@ body.is-locked {
     height: auto;
     border-radius: var(--r-card);
   }
+
+  /* The privacy policy uses h5 for its sections and h3 inside them */
+  .prose-legal h5 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.45rem, 2.1vw, 1.95rem);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    margin-top: 2.2em;
+  }
+  .prose-legal h3 {
+    font-size: clamp(1.1rem, 1.3vw, 1.25rem);
+    margin-top: 1.6em;
+  }
+  /* a heading the live policy typed whole paragraphs into: set as the text it reads as */
+  .prose-legal .legal-lines {
+    font: inherit;
+    letter-spacing: inherit;
+  }
+  .prose-legal .legal-lines > span + span {
+    margin-top: 0.7em;
+  }
+
+  /* Rich pages: the live copy, set editorially (components/ui/Rich.tsx) */
+  .rich-list {
+    border-top: 1px solid var(--color-line);
+  }
+  .rich-line {
+    display: block;
+  }
+  .rich-list > li,
+  .rich-lines > .rich-line {
+    position: relative;
+    display: block;
+    padding: 0.8rem 0 0.8rem 1.6rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .rich-list > li::before,
+  .rich-lines > .rich-line::before {
+    content: "";
+    position: absolute;
+    left: 0.15rem;
+    top: 1.32rem;
+    width: 0.62rem;
+    height: 0.38rem;
+    border-bottom: 1.5px solid var(--color-green);
+    border-right: 1.5px solid var(--color-green);
+    border-bottom-right-radius: 0.5rem;
+    transform: rotate(-18deg);
+  }
+  .rich-lines {
+    border-top: 1px solid var(--color-line);
+  }
+  .rich-h4 {
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .rich-h4.rich-lines {
+    padding-top: 0;
+    font-size: inherit;
+  }
+  [data-theme="ink"] .rich-list,
+  [data-theme="ink"] .rich-list > li,
+  [data-theme="ink"] .rich-lines,
+  [data-theme="ink"] .rich-lines > .rich-line,
+  [data-theme="ink"] .rich-h4 {
+    border-color: var(--color-line-dark);
+  }
+
+  /* The Four Step Process (components/sections/FourStepProcess.tsx) */
+  .process-frame {
+    container-type: inline-size;
+  }
+  .process-n {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--color-green);
+    font-size: clamp(2.6rem, 7vw, 4.2rem);
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+  .process-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.15rem, 2.2vw, 1.45rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-top: 0.6rem;
+  }
+  .process-text {
+    margin-top: 0.5rem;
+    color: rgba(255, 255, 255, 0.64);
+    font-size: clamp(0.98rem, 1.6vw, 1.06rem);
+    line-height: 1.45;
+    max-width: 30ch;
+  }
+  .process-frame .process-n {
+    font-size: 5.4cqw;
+  }
+  .process-frame .process-title {
+    font-size: 1.72cqw;
+    margin-top: 0.8cqw;
+  }
+  .process-frame .process-text {
+    font-size: 1.2cqw;
+    margin-top: 0.55cqw;
+  }
+  @keyframes process-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-2.4%);
+    }
+  }
+  .process-float {
+    animation: process-float 6.4s ease-in-out infinite;
+    animation-delay: var(--float-delay, 0s);
+  }
+  .reduced-motion .process-float {
+    animation: none;
+  }
+
+  /* The live site's outlined display words (WHY CHOOSE US, PROCESS, GET IN TOUCH), drawn as type, not pictures */
+  .outline-word {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 0.82;
+    letter-spacing: -0.02em;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.22);
+    user-select: none;
+    white-space: nowrap;
+  }
+  [data-theme="paper"] .outline-word,
+  [data-theme="paper-2"] .outline-word {
+    -webkit-text-stroke: 1px rgba(10, 10, 10, 0.16);
+  }
 }
 
 :focus {

@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
-import privacy from "@/content/privacy.json";
+import { richPage } from "@/content/live";
 import PrivacyPage from "@/components/pages/PrivacyPage";
+import JsonLd from "@/components/ui/JsonLd";
+import { seoFor } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: { absolute: "Privacy Policy | Revolt" },
-  description: "How Revolt Creative Marketing collects, uses and protects personal information.",
-  alternates: { canonical: "/privacypolicy" },
-  robots: { index: true, follow: true },
-};
+export const metadata: Metadata = seoFor("/privacypolicy");
 
 export default function Page() {
-  return <PrivacyPage policy={privacy} />;
+  return (
+    <>
+      <JsonLd route="/privacypolicy" />
+      <PrivacyPage page={richPage("/privacypolicy")!} />
+    </>
+  );
 }

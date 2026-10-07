@@ -7,7 +7,6 @@ import path from "node:path";
 const SRC = process.argv[2];
 const OUT = path.resolve("public/media");
 fs.mkdirSync(path.join(OUT, "blog"), { recursive: true });
-fs.mkdirSync(path.join(OUT, "city"), { recursive: true });
 fs.mkdirSync(path.join(OUT, "services"), { recursive: true });
 const src = (id) => path.join(SRC, id);
 const INK = { r: 10, g: 10, b: 10 };
@@ -32,8 +31,6 @@ for (const [name, id] of [["founder-shayne", "92bbae_446abee2453b42568dad1b9c4bc
     .linear(1.06, -6)
     .jpeg({ quality: 82, mozjpeg: true })
     .toFile(path.join(OUT, `${name}.jpg`));
-  // square crop for small uses
-  await sharp(src(id)).extract({ left: 402, top: 520, width: 2220, height: 2220 }).resize(900, 900).modulate({ saturation: 0.9 }).jpeg({ quality: 82, mozjpeg: true }).toFile(path.join(OUT, `${name}-square.jpg`));
 }
 
 // 4. The golfer (the swing photograph on the homepage and services page).
@@ -54,29 +51,6 @@ for (const id of blogIds) {
   await sharp(src(id)).flatten({ background: INK }).resize(1600, null, { withoutEnlargement: true }).jpeg({ quality: 80, mozjpeg: true }).toFile(out);
 }
 
-// 7. City page imagery (kept as PNG where they carry transparency).
-const cityIds = new Set();
-const pagesDir = path.join(SRC, "..", "pages");
-for (const f of fs.readdirSync(pagesDir)) {
-  if (!f.endsWith(".json") || f.startsWith("post__") || f === "_index.json") continue;
-  if (!/(seo-|web-design|website-design-(?!approach))/.test(f)) continue;
-  const j = JSON.parse(fs.readFileSync(path.join(pagesDir, f), "utf8"));
-  if (/Growth Marketing Systems|Branding & Design Strategy/.test(j.title)) continue;
-  for (const c of j.content) if (c.kind === "img") { const m = c.src.match(/media\/([a-zA-Z0-9_]+~mv2\.[a-z]+)/); if (m) cityIds.add(m[1]); }
-}
-for (const id of cityIds) {
-  if (!fs.existsSync(src(id))) continue;
-  const meta = await sharp(src(id)).metadata();
-  const base = id.replace(/~mv2\.[a-z]+$/, "");
-  if (meta.hasAlpha) await sharp(src(id)).resize(1200, null, { withoutEnlargement: true }).png({ compressionLevel: 9 }).toFile(path.join(OUT, "city", base + ".png"));
-  else await sharp(src(id)).resize(1400, null, { withoutEnlargement: true }).jpeg({ quality: 80, mozjpeg: true }).toFile(path.join(OUT, "city", base + ".jpg"));
-}
+// The share image is the live site's own (public/media/og-share.png), downloaded as published.
 
-// 8. Open Graph image: the wordmark on ink, 1200x630.
-const wm = await sharp(path.join(OUT, "wordmark.png")).resize(640).toBuffer();
-await sharp({ create: { width: 1200, height: 630, channels: 4, background: INK } })
-  .composite([{ input: wm, gravity: "centre" }])
-  .png()
-  .toFile(path.join(OUT, "og.png"));
-
-console.log("media done:", fs.readdirSync(OUT).length, "root files,", blogIds.size, "blog,", cityIds.size, "city");
+console.log("media done:", fs.readdirSync(OUT).length, "root files,", blogIds.size, "blog");

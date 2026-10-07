@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { subServices, systemBySlug, subServiceBySlug } from "@/content/services";
-import SubServicePage from "@/components/pages/SubServicePage";
+import { subServices, subServiceBySlug } from "@/content/services";
+import { richPage } from "@/content/live";
+import RichPageView from "@/components/pages/RichPageView";
+import JsonLd from "@/components/ui/JsonLd";
+import { seoFor } from "@/lib/seo";
 
-/** Nested sub-service pages: /growth-marketing-systems/seo-ranking and friends. */
+/** Nested service pages: /growth-marketing-systems/seo-ranking and friends. */
 type Params = { slug: string; sub: string };
 
 export function generateStaticParams(): Params[] {
@@ -13,14 +16,19 @@ export const dynamicParams = false;
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { slug, sub } = await params;
-  const s = subServiceBySlug(`/${slug}/${sub}`);
-  if (!s) return {};
-  return { title: { absolute: s.seoTitle }, description: s.description, alternates: { canonical: s.slug } };
+  return seoFor(`/${slug}/${sub}`);
 }
 
 export default async function Page({ params }: { params: Promise<Params> }) {
   const { slug, sub } = await params;
-  const s = subServiceBySlug(`/${slug}/${sub}`);
-  if (!s) notFound();
-  return <SubServicePage service={s} system={systemBySlug(s.parent)!} />;
+  const path = `/${slug}/${sub}`;
+  const s = subServiceBySlug(path);
+  const page = richPage(path);
+  if (!s || !page) notFound();
+  return (
+    <>
+      <JsonLd route={path} />
+      <RichPageView page={page} diagram={s.diagram} />
+    </>
+  );
 }

@@ -3,14 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
-import { site } from "@/content/site";
-import { systems } from "@/content/services";
+import { live } from "@/content/live";
 import { prefersReducedMotion, registerGsap } from "@/lib/motion";
 import { Arrow } from "@/components/ui/Button";
 
 /**
- * The foot of every page: the index of the site, then the wordmark running off the page
- * with the tracer drawing beneath it as it arrives.
+ * The foot of every page, as the live site has it: how to reach Revolt, the links, the services, a call to book
+ * one, and the privacy policy; then the wordmark running off the page with the tracer drawing beneath it.
  */
 export default function Footer() {
   const ref = useRef<HTMLElement>(null);
@@ -31,58 +30,64 @@ export default function Footer() {
     }, el);
     return () => ctx.revert();
   }, []);
-  const year = new Date().getFullYear();
+  const { footer } = live;
+  const icons = [
+    <path key="phone" d="M5 3.5h3l1.5 4-2 1.2a10 10 0 0 0 4.8 4.8l1.2-2 4 1.5v3a1.5 1.5 0 0 1-1.6 1.5A15 15 0 0 1 3.5 5.1 1.5 1.5 0 0 1 5 3.5Z" />,
+    <g key="mail"><rect x="3" y="5" width="16" height="12" rx="2" /><path d="m3.5 6 7.5 6 7.5-6" /></g>,
+    <g key="pin"><path d="M11 19s-6-5.4-6-10a6 6 0 0 1 12 0c0 4.6-6 10-6 10Z" /><circle cx="11" cy="9" r="2.2" /></g>,
+  ];
   return (
-    <footer ref={ref} data-theme="ink" className="relative overflow-hidden" aria-labelledby="footer-title">
-      <div className="wrap pt-24 lg:pt-32">
-        <div className="grid-12 gap-y-14">
-          <div className="col-span-12 lg:col-span-5">
-            <h2 id="footer-title" className="t-display-m max-w-[18ch]">
-              Schedule a call to learn more about our marketing ecosystems.
-            </h2>
-            <p className="t-body t-muted mt-5 max-w-[40ch]">And how we can help scale your business to the next level.</p>
-            <Link href="/contact-us" data-label="Free Strategy Call" className="btn mt-8">
-              {site.cta.label}
-              <Arrow />
+    <footer ref={ref} data-theme="ink" className="relative overflow-hidden">
+      <div className="wrap pt-20 lg:pt-28">
+        {/* how to reach Revolt */}
+        <ul className="grid grid-cols-1 gap-6 border-b border-line-dark pb-12 sm:grid-cols-3">
+          {footer.contact.map((c, i) => (
+            <li key={c.label} className="flex items-start gap-4">
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-line-dark text-green">
+                <svg viewBox="0 0 22 22" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{icons[i]}</svg>
+              </span>
+              <div className="min-w-0">
+                <p className="t-small t-muted">{c.label}</p>
+                {c.href ? (
+                  <a href={c.href} className="link t-body mt-1 inline-block font-medium [overflow-wrap:anywhere]">{c.value}</a>
+                ) : (
+                  <p className="t-body mt-1 font-medium">{c.value}</p>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        <div className="grid-12 gap-y-14 pt-14">
+          <div className="col-span-12 lg:col-span-4">
+            <Link href="/" aria-label="Revolt Marketing, home" className="relative block h-[22px] w-[138px]">
+              <Image src="/media/wordmark.png" alt="" fill sizes="138px" className="object-contain object-left" />
             </Link>
+            <p className="t-body t-muted mt-6 max-w-[38ch]">{footer.tagline}</p>
           </div>
           <div className="col-span-12 grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-3 lg:col-span-7 lg:col-start-6">
-            <div>
-              <h3 className="t-small font-medium">Company</h3>
-              <ul className="mt-4 space-y-2.5">
-                {[{ label: "Home", href: "/" }, { label: "Services", href: "/services" }, { label: "About us", href: "/about-us" }, { label: "Blog", href: "/blog" }, { label: "Contact us", href: "/contact-us" }].map((l) => (
-                  <li key={l.href}><Link href={l.href} className="link-quiet t-small t-muted">{l.label}</Link></li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h3 className="t-small font-medium">Our services</h3>
-              <ul className="mt-4 space-y-2.5">
-                {systems.map((s) => (
-                  <li key={s.slug}><Link href={s.slug} data-label={s.short} className="link-quiet t-small t-muted">{s.name}</Link></li>
-                ))}
-              </ul>
-            </div>
+            {[footer.links, footer.services].map((group) => (
+              <div key={group.heading}>
+                <p className="t-small font-medium">{group.heading}</p>
+                <ul className="mt-4 space-y-2.5">
+                  {group.items.map((l) => (
+                    <li key={l.label}><Link href={l.href} className="link-quiet t-small t-muted">{l.label}</Link></li>
+                  ))}
+                </ul>
+              </div>
+            ))}
             <div className="col-span-2 sm:col-span-1">
-              <h3 className="t-small font-medium">Contact</h3>
-              <ul className="mt-4 space-y-2.5">
-                <li><a href={site.phone.href} className="link-quiet t-small t-muted">{site.phone.display}</a></li>
-                <li><a href={`mailto:${site.email}`} className="link-quiet t-small t-muted">{site.email}</a></li>
-                <li><span className="t-small t-muted">{site.location}</span></li>
-                {site.social.map((s) => (
-                  <li key={s.label}><a href={s.href} target="_blank" rel="noopener" className="link-quiet t-small t-muted">{s.label}</a></li>
-                ))}
-              </ul>
+              <p className="t-small font-medium">{footer.book.heading}</p>
+              <Link href={footer.book.button.href} className="btn mt-4">
+                {footer.book.button.label}
+                <Arrow />
+              </Link>
             </div>
           </div>
         </div>
 
-        <div className="mt-20 flex flex-col gap-3 border-t border-line-dark pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="t-micro t-muted">© {year} {site.legalName}. {site.location}.</p>
-          <div className="t-micro flex gap-6">
-            <Link href="/privacypolicy" data-label="Privacy" className="link-quiet t-muted">Privacy Policy</Link>
-            <a href="#main" className="link-quiet t-muted">Back to top</a>
-          </div>
+        <div className="mt-16 border-t border-line-dark pt-6">
+          <Link href={footer.privacy.href} className="link-quiet t-micro t-muted">{footer.privacy.label}</Link>
         </div>
       </div>
 

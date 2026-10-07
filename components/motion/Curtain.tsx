@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { prefersReducedMotion, registerGsap } from "@/lib/motion";
 import { getLenis } from "./SmoothScroll";
-import { site } from "@/content/site";
+import { live } from "@/content/live";
 
 /* ------------------------------------------------------------------
    A tiny page-reveal bus. Heroes wait for the curtain to lift before
@@ -25,24 +25,22 @@ function fireReveal() {
   waiting.clear();
 }
 
-/* Destination names shown on the panel during a turn */
-const LABELS: Record<string, string> = {
-  "/": "Revolt",
-  "/services": "Services",
-  "/about-us": "About us",
-  "/contact-us": "Free Strategy Call",
-  "/blog": "Blog",
-  "/privacypolicy": "Privacy",
-};
-for (const s of site.nav.services) LABELS[s.href] = s.short;
+/* Destination names shown on the panel during a turn: the live navigation's own words */
+const LABELS: Record<string, string> = {};
+for (const item of live.nav.items) {
+  LABELS[item.href] = item.label;
+  for (const c of item.children ?? []) LABELS[c.href] = c.label;
+}
+LABELS[live.footer.privacy.href] = live.footer.privacy.label;
+const SYSTEMS = live.nav.items.flatMap((i) => i.children ?? []).filter((c) => c.href !== "/blog");
 export function labelFor(href: string, fallback?: string) {
   const path = href.replace(/[?#].*$/, "").replace(/\/$/, "") || "/";
   if (LABELS[path]) return LABELS[path];
   if (fallback && fallback.length <= 32) return fallback;
   const seg = path.split("/").filter(Boolean)[0] || "";
-  if (seg === "post") return "Blog";
-  for (const s of site.nav.services) if (path.startsWith(s.href)) return s.short;
-  return "Revolt";
+  if (seg === "post") return LABELS["/blog"];
+  for (const s of SYSTEMS) if (path.startsWith(s.href)) return s.label;
+  return "Revolt Marketing";
 }
 
 let leaving = false;

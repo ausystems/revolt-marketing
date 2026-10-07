@@ -4,8 +4,8 @@ Revolt Marketing (revolt-marketing.com) is a marketing firm built exclusively fo
 venues across North America. Two founders, Shayne Mueller and Tristan Costa, in Toronto. Four connected systems:
 Branding & Design Strategy, Growth Marketing Systems, Marketing Automation Systems, Event Marketing Strategy. One
 call to action everywhere: **Free Strategy Call**, which is the GoHighLevel / LeadConnector form
-`2he5XlH5aqNZcaL5EPTk`. Nothing on the site is invented: every fact, service, name, number, address and link comes
-from the live site (see `content/`).
+`2he5XlH5aqNZcaL5EPTk`. Every word a visitor reads, and every SEO tag, is the live site's, verbatim (see
+`content/live.ts` and "Copy" below). The one exception, by request, is the homepage display title.
 
 This site is a Next.js 16 App Router build: TypeScript, Tailwind v4 (tokens in `app/globals.css`), GSAP 3.15 with
 ScrollTrigger and SplitText, Lenis, Three.js (vanilla, code-split), `next/font` Inter + Geist Mono.
@@ -48,7 +48,8 @@ Where the tracer lives (and only here; it must never become a gimmick):
   (`--r-panel: clamp(20px, 2.2vw, 32px)`) on the chapter ground. Cards use `--r-card 20px`. Buttons are pills.
 * **Type.** One family for display and text: Inter (variable, optical sizing on). Display is 600 weight, tight
   tracking (`-0.045em` at XL down to `-0.02em` at S), `text-wrap: balance`. Data, index numerals, dates, labels:
-  Geist Mono (`.t-mono`). Sentence case everywhere: no tracked uppercase labels, ever. Scale:
+  Geist Mono (`.t-mono`). Copy keeps the live site's own casing (WHO WE ARE, HOME); the design never adds tracked
+  uppercase labels of its own. Scale:
   `t-display-xl` (hero, clamp 3.25–10rem) · `t-display-l` (chapter titles) · `t-display-m` (entries) ·
   `t-display-s` (card titles) · `t-standfirst` · `t-body` (17px / 1.55) · `t-small` · `t-micro`.
   Every headline is composed: line breaks are art-directed with `<span class="mask-line">` per line on desktop and
@@ -57,8 +58,8 @@ Where the tracer lives (and only here; it must never become a gimmick):
   exception is the internal page hero, which may carry a single mono caption beside the tracer mark (the system's
   numeral and name, or the date of an article); chapters never do. The only other small caption is `.note` — a green
   mono caption next to real UI, at most two per page. No circled icons, no
-  three-identical-card grids, no stock illustrations. The live site's flat green illustrations are retired; its real
-  photographs (the bay, the golfer, the founders) and its branded blog covers are kept and graded.
+  three-identical-card grids, no stock illustrations. The live site's real photographs (the bay, the golfer, the
+  founders), its branded blog covers and its Four Step Process illustrations (`public/media/process/`) are kept.
 * **Imagery.** Real assets only, in `public/media`. `hero-bay.jpg` (the venue bay), `golfer.jpg` (the swing),
   `founder-shayne.jpg`, `founder-tristan.jpg`, service scenes `services/*.jpg` (stills rendered from the site’s own real-time scenes,
   plus the venue photograph), blog covers, and the hero's simulator picture `hero/course-*.webp` (rendered by
@@ -73,13 +74,14 @@ Where the tracer lives (and only here; it must never become a gimmick):
 * `TextLink` — underline that leaves to the right on hover (`.link`) or arrives (`.link-quiet`).
 * `TracerMark` — the chapter seal. `<TracerMark />` inline SVG, 56×20, draws on reveal.
 * `Panel` — rounded stage with `tone="ink" | "paper" | "field"`.
-* `Ledger` — hairline rows `label · leader · value`, mono values, for facts and breakdowns.
 * `Index` — the numbered editorial list (01–04) used for services and process steps.
 * `Accordion` — for FAQs (city pages), animated height, `aria-expanded`.
 * `Form` — the LeadConnector embed in a panel with a designed surround: heading, what happens next, contact ledger.
   It must remain the real `api.leadconnectorhq.com/widget/form/2he5XlH5aqNZcaL5EPTk` iframe plus
   `link.msgsndr.com/js/form_embed.js`. Never a fake success state.
-* `Media` — `next/image` in a `media-cover` frame with a reveal mask.
+* `Rich` — the live page's blocks (headings, paragraphs with their links, hand-broken lines, lists, buttons) set
+  editorially; `RichPageView` composes the service, city and policy pages from them.
+* `JsonLd` — the route's structured data, exactly as the live page publishes it.
 
 ## Motion rules
 
@@ -114,14 +116,21 @@ Where the tracer lives (and only here; it must never become a gimmick):
 ```
 
 Every page needs one choreographed hero moment and at least one page-specific interaction that means something.
-Do not use the same fade-up everywhere. Every page carries the strategy-call chapter before the footer.
+Do not use the same fade-up everywhere. The homepage closes on the strategy-call chapter; the contact page carries
+the form.
 
-## Copy voice
+## Copy
 
-Direct, specific, sentence case. Keep Revolt's substance and vocabulary (bays, walk-ins, weekdays, corporate events,
-re-bookings, "the only marketing firm built exclusively for golf simulator venues", "100+ venues researched").
-Never invent results, clients, testimonials or numbers. The live site's `#1` claim stays in the SEO title only.
-Straight quotes become typographic ones. No lorem ipsum.
+The copy is the live site's, word for word, including its casing, quotes, typos and the blog's excerpts. It is
+generated, never typed: `node scripts/scrape-live.mjs <dir>` downloads every page in the live sitemaps, then
+`node scripts/live-copy.mjs <dir>` writes `content/live/*.json` (pages, systems, nav, footer, SEO, sitemap dates) and
+`content/posts.json`. Components only decide how the words look; they never add words of their own (drawings carry
+no labels, transitions show the live navigation's names). The only exception is the homepage display title,
+"Marketing built exclusively for golf simulator venues."; the live h1 sits above it. Never invent results, clients,
+testimonials or numbers.
+
+SEO is equally verbatim: each route's title, description, canonical, Open Graph and Twitter tags and JSON-LD come
+from `content/live/seo.json` through `lib/seo.ts`; the sitemap carries the live sitemaps' dates.
 
 ## Quality bar
 

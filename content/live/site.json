@@ -1,0 +1,352 @@
+{
+ "nav": {
+  "items": [
+   {
+    "label": "HOME",
+    "href": "/"
+   },
+   {
+    "label": "SERVICES",
+    "href": "/services",
+    "children": [
+     {
+      "label": "Branding & Design Strategy",
+      "href": "/branding-and-design-strategy"
+     },
+     {
+      "label": "Growth Marketing Systems",
+      "href": "/growth-marketing-systems"
+     },
+     {
+      "label": "Marketing Automation Systems",
+      "href": "/marketing-automation-systems"
+     },
+     {
+      "label": "Event Marketing Strategy",
+      "href": "/event-marketing-strategy"
+     }
+    ]
+   },
+   {
+    "label": "ABOUT US",
+    "href": "/about-us",
+    "children": [
+     {
+      "label": "Blog",
+      "href": "/blog"
+     }
+    ]
+   },
+   {
+    "label": "CONTACT US",
+    "href": "/contact-us"
+   }
+  ],
+  "cta": {
+   "label": "Free Strategy Call",
+   "href": "/contact-us"
+  }
+ },
+ "footer": {
+  "contact": [
+   {
+    "label": "Call Us Now",
+    "value": "(647)-951-4131",
+    "href": "tel:+16479514131"
+   },
+   {
+    "label": "Email Address",
+    "value": "shayne@revolt-marketing.com",
+    "href": "mailto:shayne@revolt-marketing.com"
+   },
+   {
+    "label": "Location",
+    "value": "Toronto, Canada",
+    "href": null
+   }
+  ],
+  "tagline": "Schedule a call to learn more about our Marketing Ecosystems and how we can help scale your business to the next level",
+  "links": {
+   "heading": "Our Links",
+   "items": [
+    {
+     "label": "Home",
+     "href": "/"
+    },
+    {
+     "label": "About Us",
+     "href": "/about-us"
+    },
+    {
+     "label": "Services",
+     "href": "/services"
+    },
+    {
+     "label": "Contact Us",
+     "href": "/contact-us"
+    }
+   ]
+  },
+  "services": {
+   "heading": "Our Services",
+   "items": [
+    {
+     "label": "Branding & Design Strategy",
+     "href": "/branding-and-design-strategy"
+    },
+    {
+     "label": "Growth Marketing Systems",
+     "href": "/growth-marketing-systems"
+    },
+    {
+     "label": "Marketing Automation Systems",
+     "href": "/marketing-automation-systems"
+    },
+    {
+     "label": "Event Marketing Strategy",
+     "href": "/event-marketing-strategy"
+    }
+   ]
+  },
+  "book": {
+   "heading": "Book a Call",
+   "button": {
+    "label": "Free Strategy Call",
+    "href": "/contact-us"
+   }
+  },
+  "privacy": {
+   "label": "Privacy Policy",
+   "href": "/privacypolicy"
+  }
+ },
+ "home": {
+  "hero": {
+   "h1": "North Americas #1 Golf Simulator Marketing Firm",
+   "p": "Most golf simulator venues struggle with inconsistent walk-in traffic and empty weekdays. We're the only golf simulator marketing company built exclusively for golf entertainment venues across North America. Our proven golf simulator marketing strategies fill your bays, book corporate events, and maximize revenue.",
+   "buttons": [
+    {
+     "text": "Book A FREE Strategy Call",
+     "href": "/contact-us"
+    },
+    {
+     "text": "Learn More",
+     "href": "/services"
+    }
+   ]
+  },
+  "who": {
+   "h3": "WHO WE ARE",
+   "ps": [
+    "We're a specialized golf simulator marketing firm built exclusively for golf simulator entertainment venues across North America. From golf simulator marketing near me to golf simulator marketing across North America, we help venues fill their bays, book corporate events, and maximize revenue through proven digital strategies.",
+    "Marketing isn't just a set of disconnected tasks, it's an ecosystem. When that system works in sync, everything runs better: more walk-ins, more events, more revenue, less stress."
+   ]
+  },
+  "process": {
+   "label": "PROCESS",
+   "h2": "Four Step Process",
+   "p": "The Only Golf Simulator Marketing Company Built Exclusively For Golf Simulator Entertainment Venues Across North America",
+   "steps": [
+    {
+     "n": "1.",
+     "title": "Branding & Design Strategy",
+     "text": "Launch with professional branding that makes you stand out from day one"
+    },
+    {
+     "n": "2.",
+     "title": "Growth Marketing Systems",
+     "text": "Drive consistent bookings and fill your bays with ready-to-book customers daily"
+    },
+    {
+     "n": "3.",
+     "title": "Marketing Automation Systems",
+     "text": "Chip In smart automation that turns first-time visitors into loyal lifetime regulars"
+    },
+    {
+     "n": "4.",
+     "title": "Event Marketing Strategy",
+     "text": "Sink more corporate events and fill your slow weekdays with consistent revenue"
+    }
+   ]
+  },
+  "why": {
+   "label": "WHY CHOOSE US",
+   "h2": "Why Golf Simulator Venues Choose Revolt Marketing",
+   "items": [
+    {
+     "title": "Specialized Exclusively In Golf Simulator Marketing",
+     "text": "We only work with golf entertainment venues. Every golf simulator marketing strategy is built for your venue type."
+    },
+    {
+     "title": "No Daily Content Creation Required",
+     "text": "Built for automated venues. We use professional shoots and paid ads, not daily filming. Trusted by golf simulators across North America."
+    },
+    {
+     "title": "Proven Strategies From 100+ Venues Researched",
+     "text": "Our golf simulator marketing strategies are data driven, not guesswork."
+    },
+    {
+     "title": "Performance-Focused, Not Vanity Metrics",
+     "text": "We focus on bookings and revenue whether you need golf simulator marketing USA coverage or a local golf simulator marketing company."
+    }
+   ]
+  },
+  "digital": {
+   "h3": "Why Digital Marketing Matters For Golf Venues",
+   "ps": [
+    "Don't just rely on walk-ins or word of mouth. Your golf simulator venue needs a solid digital presence to truly grow. Without it, you're missing out on bookings and revenue. As a specialized golf simulator marketing company for golf entertainment venues, we build a strong foundation that increases your online visibility, keeps customers engaged, and fuels lasting growth.",
+    "Growth isn’t just about clicks. It’s about building something that lasts.",
+    "Let’s Build Your Growth Engine. Whether you're just getting started or ready to scale, we’re here to build the system that brings in leads week after week.",
+    "Book a free consultation today."
+   ],
+   "button": {
+    "text": "Get In Touch",
+    "href": "/contact-us"
+   }
+  },
+  "call": {
+   "h1": "Free Strategy Call",
+   "p": "During this free strategy call, we'll audit your golf simulator marketing efforts, identify what's holding you back, and show you exactly how to fill your bays and book more corporate events. Perfect for venue operators looking to implement effective golf simulator marketing strategies across North America."
+  }
+ },
+ "about": {
+  "h1": "Meet Our Team",
+  "p": "Two founders with one focus: filling golf simulator venues across North America with clients who book, return, and refer",
+  "founders": [
+   {
+    "name": "Shayne Mueller",
+    "bio": "Shayne leads Revolt's growth marketing strategies, combining creative advertising with data-driven optimization. With a background scaling e-commerce brands through paid advertising, he now specializes in driving walk-in traffic for golf simulator venues. He builds Google Ads and Meta campaigns that track every click, booking, and dollar spent, so venue owners know exactly what's working. Your campaigns aren't just creative, they're measurable, optimized, and profitable."
+   },
+   {
+    "name": "Tristan Costa",
+    "bio": "Tristan leads Revolt's sales, event marketing and local growth strategies. After building one of Toronto's largest nightlife companies and consistently filling venues to capacity, he now helps golf simulator venues create that same demand. He specializes in corporate events, league membership campaigns, and local brand positioning that turns weekday afternoons into high-value bookings. For venue owners, that means packed weekdays and predictable event revenue."
+   }
+  ],
+  "why": {
+   "h3": "WHY WE BUILT REVOLT FOR GOLF SIMULATOR VENUES",
+   "ps": [
+    "After working with dozens of local businesses across Toronto, we noticed a pattern: golf simulator venues were growing fast but struggling with the same marketing challenges. They needed consistent walk-in traffic, corporate event bookings, and repeat customers, but most marketing firms didn't understand their unique business model.",
+    "So we specialized. We studied 100+ golf entertainment venues, identified what actually drives bookings (not just followers), and built proven strategies specifically for this industry. Now we're the only marketing firm in North America focused exclusively on golf simulators."
+   ]
+  },
+  "approach": {
+   "h3": "OUR APPROACH",
+   "items": [
+    {
+     "title": "Specialized, Not Generalized",
+     "text": "Every solution we build is created specifically for golf simulator businesses"
+    },
+    {
+     "title": "Walk-Ins + Bookings + Repeat Visits",
+     "text": "Our systems don't only bring traffic, they bring lifetime customers"
+    },
+    {
+     "title": "Proven Playbooks, Not Experiments",
+     "text": "All of our systems are crafted with extensive research behind them"
+    },
+    {
+     "title": "Clear Communication",
+     "text": "We provide you with clear reports and fast communication for any questions"
+    }
+   ]
+  }
+ },
+ "services": {
+  "h1": "Marketing Built For Golf Simulator Venues",
+  "p": "The Only Marketing Firm Built Exclusively For Golf Simulator Entertainment Venues Across North America",
+  "systems": [
+   {
+    "name": "Branding & Design Strategy",
+    "subtitle": "Stand Out In Your Market From Day One",
+    "text": "Launch with professional branding, a high-converting website, and an optimized Google presence that turns searches into bookings. First impressions matter, make yours unforgettable.",
+    "buttons": [
+     {
+      "text": "Free Strategy Call",
+      "href": "/contact-us"
+     },
+     {
+      "text": "Learn More",
+      "href": "/branding-and-design-strategy"
+     }
+    ]
+   },
+   {
+    "name": "Growth Marketing Systems",
+    "subtitle": "Fill Your Bays With Ready-To-Book Customers",
+    "text": "Drive consistent bookings through Google Ads, Meta advertising, and local SEO that dominates 'golf simulator near me' searches. We turn empty bays into packed schedules.",
+    "buttons": [
+     {
+      "text": "Free Strategy Call",
+      "href": "/contact-us"
+     },
+     {
+      "text": "Learn More",
+      "href": "/growth-marketing-systems"
+     }
+    ]
+   },
+   {
+    "name": "Marketing Automation Systems",
+    "subtitle": "Turn First-Time Visitors Into Lifetime Regulars",
+    "text": "Turn first-time visitors into loyal regulars through automated email, SMS, and review systems. Reduce no-shows with booking reminders and reactivate inactive customers, all on autopilot.",
+    "buttons": [
+     {
+      "text": "Free Strategy Call",
+      "href": "/contact-us"
+     },
+     {
+      "text": "Learn More",
+      "href": "/marketing-automation-systems"
+     }
+    ]
+   },
+   {
+    "name": "Event Marketing Strategy",
+    "subtitle": "Fill Your Weekdays with High-Value Corporate Events",
+    "text": "Fill your weekdays with high-value corporate events, private parties, and league memberships. We handle B2B outreach, event landing pages, and booking automation so you don't have to.",
+    "buttons": [
+     {
+      "text": "Free Strategy Call",
+      "href": "/contact-us"
+     },
+     {
+      "text": "Learn More",
+      "href": "/event-marketing-strategy"
+     }
+    ]
+   }
+  ],
+  "why": {
+   "label": "WHY CHOOSE US",
+   "h2": "Why Golf Simulator Venues Choose Revolt Marketing",
+   "items": [
+    {
+     "title": "Specialized Exclusively In Golf Simulator Marketing",
+     "text": "We don't serve restaurants, retailers, or random businesses. Just golf entertainment venues. That's it!"
+    },
+    {
+     "title": "No Daily Content Creation Required",
+     "text": "Perfect for automated venues without full-time staff. We use professional shoots and paid ads, not daily filming."
+    },
+    {
+     "title": "Proven Strategies From 100+ Venues Researched",
+     "text": "We know what works because we've studied the market. Our strategies are built on data, not guesswork."
+    },
+    {
+     "title": "Performance-Focused, Not Vanity Metrics",
+     "text": "We care about bookings and revenue, not followers. Results that matter to your bottom line."
+    }
+   ]
+  }
+ },
+ "contact": {
+  "label": "GET IN TOUCH",
+  "h1": "Book a Free Strategy Call",
+  "p": "Get a custom growth plan to increase bookings, boost retention, and dominate your local market. Built by the only marketing company specialized in golf simulator businesses."
+ },
+ "blog": {
+  "allPosts": "All Posts",
+  "recentPosts": "Recent Posts",
+  "seeAll": "See All"
+ }
+}
