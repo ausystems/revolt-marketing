@@ -49,7 +49,7 @@ content/                 site.ts (facts, links, founders), services.ts (four sys
                          cities.json, privacy.json
 components/motion/       SmoothScroll (Lenis), Curtain (preloader + chapter-turn page transitions), useReveals,
                          useSectionTheme (nav inversion)
-components/scenes/       BayScene (hero: bay, turf, screen + HUD), course.ts (the hole on the screen, shared),
+components/scenes/       BayScene (hero: bay, turf, screen + HUD), course.ts (the hole on the screen),
                          CourseBake (renders public/media/hero/course-*.webp), EcosystemScene (four tracers, one venue)
 components/sections/     Nav, Footer, Hero, WhoWeAre, Systems, Ecosystem, WhyRevolt, Journey, StrategyCall, PageHero
 components/pages/        the internal page compositions

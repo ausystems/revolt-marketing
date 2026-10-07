@@ -19,7 +19,6 @@
 import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
-import { BALL as V_BALL, COURSE, projectToScreen } from "./course";
 
 const INK = 0x0a0a0a;
 const GREEN = new THREE.Color(0x2bb61e);
@@ -28,7 +27,7 @@ const BALL_R = 0.0342;
 const MAT_TOP = 0.03;
 const MAT_PILE = 0.018;
 const BALL_REST = new THREE.Vector3(0.06, MAT_TOP + MAT_PILE + BALL_R - 0.009, 0.08);
-/** Where the ball meets the screen (UV): just below centre, above the virtual ball on its tee. */
+/** Where the ball meets the screen (UV): just below centre, over the fairway. */
 const IMPACT_UV = new THREE.Vector2(0.5, 0.47);
 
 /* --------------------------------------------------------------------------------------------- small helpers */
@@ -341,7 +340,6 @@ const SCREEN_FRAG = /* glsl */ `
   uniform float uGain;         // projector brightness
   uniform vec2 uImpact;        // where the ball strikes (uv)
   uniform float uHit;          // 0..1: the strike blooms, then settles to a soft glow
-  uniform vec3 uVBall;         // the virtual ball on its tee: uv, radius
   uniform vec3 uGreen;
   uniform float uAspect;
   varying vec2 vUv;
@@ -350,20 +348,6 @@ const SCREEN_FRAG = /* glsl */ `
     vec2 uv = vUv;
     vec2 asp = vec2(uAspect, 1.0);
     vec3 col = texture2D(uCourse, uv).rgb;
-    float px = 1.0 / 1600.0;
-    // the virtual ball waiting on its tee: peg, contact shadow, a lit sphere
-    {
-      vec2 bp = (uv - uVBall.xy) * asp;
-      float br = max(uVBall.z, 1.1 * px);
-      float peg = step(abs(bp.x), br * 0.22) * step(-br * 1.7, bp.y) * step(bp.y, 0.0);
-      col = mix(col, vec3(0.86, 0.83, 0.78), peg);
-      float sh = exp(-pow(length((bp + vec2(-br * 0.6, br * 1.7)) / vec2(br * 2.2, br * 0.55)), 2.0));
-      col *= 1.0 - sh * 0.45;
-      float a = smoothstep(br + px * 0.8, br - px * 0.8, length(bp));
-      vec3 n = vec3(bp / br, sqrt(max(1.0 - dot(bp, bp) / (br * br), 0.0)));
-      float l = clamp(dot(n, normalize(vec3(-0.45, 0.6, 0.66))) * 0.55 + 0.55, 0.0, 1.0);
-      col = mix(col, vec3(0.95) * l + 0.03, a);
-    }
     vec4 hud = texture2D(uHud, uv);
     col = mix(col, hud.rgb, hud.a);
     // the projector: a hot spot, lifted blacks, the weave of the impact screen
@@ -688,16 +672,12 @@ export class BayScene {
     piece(2.8 - sx, SCREEN.h, -(sx + 2.8) / 2, SCREEN.y); // left
     piece(2.8 - sx, SCREEN.h, (sx + 2.8) / 2, SCREEN.y);  // right
 
-    // the virtual ball on its tee: where the tee camera sees it, and how big (uv.y units of a vertical fov)
-    const rest = projectToScreen([V_BALL.x, V_BALL.y, -V_BALL.d]);
-    const restR = (V_BALL.r / rest.depth) / (2 * Math.tan(((COURSE.fov / 2) * Math.PI) / 180));
     this.screenMat = this.track(new THREE.ShaderMaterial({
       vertexShader: SCREEN_VERT,
       fragmentShader: SCREEN_FRAG,
       uniforms: {
         uCourse: { value: null }, uHud: { value: null }, uGain: { value: 1 },
         uImpact: { value: IMPACT_UV.clone() }, uHit: { value: 0 },
-        uVBall: { value: new THREE.Vector3(rest.u, rest.v, restR) },
         uGreen: { value: GREEN.clone() }, uAspect: { value: SCREEN.w / SCREEN.h },
       },
       fog: false,

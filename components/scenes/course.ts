@@ -1,9 +1,8 @@
 /**
  * The virtual hole on the simulator screen.
  *
- * One source of truth for the course the screen shows: its terrain, its layout and its tee camera.
- * `CourseBake.ts` renders the hole into `public/media/hero/course-*.webp`; `BayScene.ts` uses the same camera to
- * place the virtual ball on its tee exactly where the bake's tee box is.
+ * The course the screen shows: its terrain, its layout and its tee camera. `CourseBake.ts` renders the hole into
+ * `public/media/hero/course-*.webp`, which `BayScene.ts` projects onto the bay's screen.
  *
  * Course space: metres, three.js axes. The tee camera looks down -z, so a point `d` metres down the hole sits at
  * z = -d, and +x is to the golfer's right.
@@ -76,20 +75,4 @@ export function teeCamera() {
   const pos: [number, number, number] = [0, y, COURSE.back];
   const look: [number, number, number] = [0, y + Math.sin(p) * 10, COURSE.back - Math.cos(p) * 10];
   return { pos, look, fov: COURSE.fov };
-}
-
-/** The ball on the tee (resting on a peg a few centimetres above the tee box). */
-export const BALL = { x: 0, y: COURSE.teeTop + 0.045, d: 0, r: 0.0214 };
-
-/** Project a course-space point through the tee camera to screen UV (0,0 bottom-left), plus its distance. */
-export function projectToScreen([x, y, z]: [number, number, number]) {
-  const { pos } = teeCamera();
-  const p = (COURSE.pitch * Math.PI) / 180;
-  // camera basis: right = +x, forward = (0, sin p, -cos p), up = (0, cos p, sin p)
-  const rx = x - pos[0], ry = y - pos[1], rz = z - pos[2];
-  const fz = ry * Math.sin(p) - rz * Math.cos(p);
-  const uy = ry * Math.cos(p) + rz * Math.sin(p);
-  const t = Math.tan(((COURSE.fov / 2) * Math.PI) / 180);
-  const aspect = COURSE.width / COURSE.height;
-  return { u: 0.5 + rx / (fz * t * aspect) / 2, v: 0.5 + uy / (fz * t) / 2, depth: fz };
 }

@@ -745,17 +745,7 @@ export function bakeCourse(scale = 2): string {
   }));
   treeMesh.frustumCulled = false; treeMesh.renderOrder = 2; scene.add(treeMesh);
 
-  // tee markers and the pin (lit by a matching sun)
-  scene.add(new THREE.HemisphereLight(0xcfe3ff, 0x4d7a2a, 1.1));
-  const dl = new THREE.DirectionalLight(0xfff4e0, 2.4);
-  dl.position.copy(sun).multiplyScalar(100);
-  scene.add(dl);
-  const markerMat = new THREE.MeshStandardMaterial({ color: 0xf2f2ee, roughness: 0.35 });
-  for (const sx of [-1, 1]) {
-    const m = new THREE.Mesh(new THREE.SphereGeometry(0.085, 32, 16), markerMat);
-    m.position.set(sx * 3.3, COURSE.teeTop + 0.07, -1.2);
-    m.renderOrder = 3; scene.add(m);
-  }
+  // the pin (no tee markers or balls anywhere on the picture: nothing on the screen should read as a golf ball)
   const py = terrain(COURSE.pin.x, COURSE.pin.d);
   const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 6.2, 8), new THREE.MeshBasicMaterial({ color: 0xf4f1e8 }));
   pole.position.set(COURSE.pin.x, py + 3.1, -COURSE.pin.d); pole.renderOrder = 3; scene.add(pole);
